@@ -11,6 +11,10 @@ from codeformer.facelib.detection.yolov5face.face_detector import YoloDetector
 
 
 def init_detection_model(model_name, half=False, device="cuda"):
+
+    if model_name is None:
+        return None
+        
     if "retinaface" in model_name:
         model = init_retinaface_model(model_name, half, device)
     elif "YOLOv5" in model_name:
