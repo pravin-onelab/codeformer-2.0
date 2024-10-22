@@ -115,7 +115,11 @@ def inference_app_with_bboxes(image, bounding_boxes, background_enhance, face_up
     # For each face bounding box, crop and enhance
     for bbox in bounding_boxes:
         x1, y1, x2, y2 = bbox
-        face_img = img[y1:y2, x1:x2]  # Crop the face region
+        # Ensure the bounding box values are integers
+        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+    
+        # Crop the face region
+        face_img = img[y1:y2, x1:x2]
 
         # Resize the cropped face to the required size (512x512) if needed
         face_img_resized = cv2.resize(face_img, (512, 512), interpolation=cv2.INTER_LINEAR)
