@@ -60,7 +60,7 @@ class FaceRestoreHelper(object):
         upscale_factor,
         face_size=512,
         crop_ratio=(1, 1),
-        det_model="retinaface_resnet50",
+        det_model=None,  # Set default to None
         save_ext="png",
         template_3points=False,
         pad_blur=False,
@@ -71,9 +71,15 @@ class FaceRestoreHelper(object):
         self.upscale_factor = int(upscale_factor)
         # the cropped face ratio based on the square face
         self.crop_ratio = crop_ratio  # (h, w)
-        assert self.crop_ratio[0] >= 1 and self.crop_ratio[1] >= 1, "crop ration only supports >=1"
+        assert self.crop_ratio[0] >= 1 and self.crop_ratio[1] >= 1, "crop ratio only supports >=1"
         self.face_size = (int(face_size * self.crop_ratio[1]), int(face_size * self.crop_ratio[0]))
-        self.det_model = det_model
+        self.det_model = det_model  # Set detection model, allow None for skipping detection
+
+        if det_model is not None:
+            # Initialize face detector only if a detection model is provided
+            self.face_detector = init_detection_model(det_model, half=False, device=device)
+        else:
+            self.face_detector = None
 
         if self.det_model == "dlib":
             # standard 5 landmarks for FFHQ faces with 1024 x 1024
